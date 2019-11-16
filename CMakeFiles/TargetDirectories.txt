@@ -1,0 +1,3 @@
+/home/pi/smart-doorbell/CMakeFiles/rebuild_cache.dir
+/home/pi/smart-doorbell/CMakeFiles/motion_detect.dir
+/home/pi/smart-doorbell/CMakeFiles/edit_cache.dir
