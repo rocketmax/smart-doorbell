@@ -1,0 +1,5 @@
+#ignored filetypes
+*.avi
+
+#ignore precompiled executable
+motion_detect
