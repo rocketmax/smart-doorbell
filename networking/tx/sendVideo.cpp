@@ -16,7 +16,7 @@
 using namespace std;
 using namespace cv;
 
-vector<uchar> mat2vec(Mat mat){
+/*vector<uchar> mat2vec(Mat mat){
 
   std::vector<uchar> array;
   if (mat.isContinuous())
@@ -25,7 +25,7 @@ vector<uchar> mat2vec(Mat mat){
     for (int i = 0; i < mat.rows; ++i)
       array.insert(array.end(), mat.ptr<uchar>(i), mat.ptr<uchar>(i)+mat.cols);
   return array;
-}
+}*/
 
 vector<vector<uchar>> mat2vecs(Mat mat){
 
@@ -44,7 +44,7 @@ vector<vector<uchar>> mat2vecs(Mat mat){
   return array;
 }
 
-void printV(vector<uchar> v){
+/*void printV(vector<uchar> v){
 
   vector<uchar>::iterator p;
   for(p = v.begin(); p < v.end(); p++)
@@ -57,9 +57,9 @@ void printVs(vector<vector<uchar>> v){
   vector<vector<uchar>>::iterator ptr;
   for(ptr = v.begin(); ptr < v.end(); ++ptr)
     printV(*ptr);
-}
+}*/
 
-Mat vecs2mat(vector<vector<uchar>> v){
+/*Mat vecs2mat(vector<vector<uchar>> v){
 
   Mat image(0, v[0].size(), CV_8UC1);
 
@@ -68,7 +68,7 @@ Mat vecs2mat(vector<vector<uchar>> v){
     image.push_back(sample);
   }
   return image;
-}
+}*/
 
 int main(int argc, char *argv[]){
 
@@ -82,12 +82,10 @@ int main(int argc, char *argv[]){
     Mat bwi, image = imread("/home/ubuntafoo/Downloads/dog.jpg", CV_LOAD_IMAGE_COLOR);
     cvtColor(image, bwi, COLOR_BGR2GRAY);
     bwi.convertTo(bwi, CV_8UC1);
+    resize(bwi, bwi, Size(), 0.5, 0.5, INTER_LINEAR);
     vector<vector<uchar>> iv = mat2vecs(bwi);
-    //printVs(test);
-    //namedWindow( "image", WINDOW_AUTOSIZE );
-    //Mat testim = vecs2mat(test);
-    //imshow("image", testim);
-    //waitKey(0);
+    //vector<uchar> test;
+    //imencode("jpeg", bwi, test, NULL);
 
     // Creating socket file descriptor
     if ((server_fd = socket(AF_INET, SOCK_STREAM, 0)) == 0)
@@ -134,9 +132,15 @@ int main(int argc, char *argv[]){
     //sprintf( w, "%d", bwi.cols);
     send(new_socket, sz, strlen(sz), 0);
 
+    //send(new_socket, test.data(), test.size(), 0);
     for(int i = 0; i < bwi.rows; i ++){
       send(new_socket, iv[i].data(), bwi.cols, 0);
       usleep(500);
+      //valread = read( new_socket, buffer, 1);
+      //if(buffer[0] != 'a') {
+      //  cout << "Error detected" << endl;
+      //  break;
+      //}
     }
 
     //send(new_socket, w, strlen(w), 0);

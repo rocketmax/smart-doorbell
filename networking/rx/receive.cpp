@@ -38,7 +38,8 @@ int main(int argc, char const *argv[])
 {
     int sock = 0, valread;
     struct sockaddr_in serv_addr;
-    char *hello = "Hello from client";
+    char *hello = "Client connected";
+    char *ack = "a";
     char sz_buf[10] = {0};
     char buffer[1920] = {0};
     //Mat image;
@@ -71,7 +72,7 @@ int main(int argc, char const *argv[])
         return -1;
     }
     send(sock , hello , strlen(hello) , 0 );
-    printf("Hello message sent\n");
+    printf("Connected to Server\n");
     //valread = read( sock , ptr, 1024);
     valread = read( sock, sz_buf, 1920);
     char * height = strtok (sz_buf,",");
@@ -87,9 +88,20 @@ int main(int argc, char const *argv[])
       valread = read(sock, buffer, w);
       vector<uchar> temp(buffer, buffer+w);
       im.push_back(temp);
+      //send(sock, ack, strlen(ack), 0);
     }
 
-    a = reinterpret_cast<uchar*>(buffer);
+    vector<uchar> rx;
+
+    /*while(valread){
+      valread = read(sock, buffer, 1920);
+      vector<uchar> temp(buffer, buffer+1920);
+      rx.insert(rx.end(), temp.begin(), temp.end());
+    }
+
+    Mat image = imdecode(rx, 0);*/
+
+    //a = reinterpret_cast<uchar*>(buffer);
 
     Mat image = vecs2mat(im);
     //printf("%s\n",buffer );
