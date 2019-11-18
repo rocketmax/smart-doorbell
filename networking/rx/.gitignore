@@ -2,7 +2,8 @@
 *.avi
 
 #ignore precompiled executable
-motion_detect
+receive
+transmit
 
 #ignore CMake stuff
 CMakeFiles

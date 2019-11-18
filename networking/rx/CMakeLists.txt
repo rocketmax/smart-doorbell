@@ -1,0 +1,7 @@
+cmake_minimum_required(VERSION 2.8)
+project( receive )
+set(CMAKE_CXX_FLAGS "-std=c++0x")
+find_package( OpenCV REQUIRED )
+include_directories( ${OpenCV_INCLUDE_DIRS} )
+add_executable( receive receive.cpp )
+target_link_libraries( receive ${OpenCV_LIBS} )

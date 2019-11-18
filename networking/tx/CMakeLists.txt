@@ -1,0 +1,7 @@
+cmake_minimum_required(VERSION 2.8)
+project( sendVideo )
+set(CMAKE_CXX_FLAGS "-std=c++0x")
+find_package( OpenCV REQUIRED )
+include_directories( ${OpenCV_INCLUDE_DIRS} )
+add_executable( sendVideo sendVideo.cpp )
+target_link_libraries( sendVideo ${OpenCV_LIBS} )
