@@ -8,10 +8,9 @@
 #include <opencv2/highgui.hpp>
 #include <opencv2/imgproc.hpp>
 
-bool detect(cv::Mat current, cv::Mat past, float sensitivity) {
+bool detect(cv::Mat current, cv::Mat past, float sensitivity, int margin) {
 
   int count = 0;
-  int margin = 3;
   int pixels = current.size().height * current.size().width;
   cv::Mat lowerB, upperB, dst;
   lowerB = past - 5;
@@ -35,17 +34,32 @@ int desiredFPS(float processTime, int fps) {
   return wait;
 }
 
-int main() {
+int main(int argc, char *argv[]) {
   //std::cout << "Hello World!\n";
+  const cv::String keys = 
+      "{help h usage ?|     | print this message      }"
+      "{fps           | -1  | framerate cap (def: inf)}"
+      "{sens          | .995| sensitivity for motion  }"
+      "{margin        | 3   | margin for motion       }"
+      "{device        | 0   | webcam device number    }"
+      ;
+  cv::CommandLineParser parser(argc, argv, keys);
+  parser.about("motion_detector for smart-doorbell");
+  if (parser.has("help")){
+    parser.printMessage();
+    return 0;
+  }
+
   clock_t start;
   int wait = 1;
-  int targetFPS = 22; //-1 = no limit
-  float sensitivity = 0.995; //higher for more sens, works better at distance + in dark. lower gives less false positives
+  int targetFPS = parser.get<int>("fps"); //-1 = no limit
+  float sensitivity = parser.get<float>("sens"); //higher for more sens, works better at distance + in dark. lower gives less false positives
                             //could make dynamic by sensing light level, maybe average pixel value to alter
+  int margin = parser.get<int>("margin");
   float lap, fps;
   cv::Mat frame, greyFrame, lastFrame;
   cv::VideoCapture cap;
-  int deviceID = 0;
+  int deviceID = parser.get<int>("device");
   int apiID = cv::CAP_ANY;
   cap.open(deviceID + apiID);
   cv::VideoWriter writer;
@@ -70,9 +84,9 @@ int main() {
     cv::cvtColor(frame, greyFrame, cv::COLOR_BGR2GRAY);
     greyFrame.convertTo(greyFrame, CV_8UC1);
     if (!lastFrame.empty())
-    if (detect(greyFrame, lastFrame, sensitivity)) {
+    if (detect(greyFrame, lastFrame, sensitivity, margin)) {
       std::cout << "MOTION DETECTED";
-      name = "./camera" + std::to_string(vidcount) + ".avi";
+      name = "camera" + std::to_string(vidcount) + ".avi";
       if (!writer.isOpened()) {
         if(targetFPS == -1) writer.open(name, codec, 22, frame.size(), true);
         else writer.open(name, codec, targetFPS, frame.size(), true);
