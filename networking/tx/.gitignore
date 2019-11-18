@@ -1,9 +1,10 @@
 #ignored filetypes
 *.avi
+*.save
+*.swp
 
 #ignore precompiled executable
-receive
-transmit
+sendVideo
 
 #ignore CMake stuff
 CMakeFiles
