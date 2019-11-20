@@ -1,7 +1,10 @@
 #ignored filetypes
 *.avi
+*.save
+*.swp
 
 #ignore precompiled executable
+motion_detect
 
 #ignore CMake stuff
 CMakeFiles
