@@ -82,10 +82,14 @@ int main(int argc, char *argv[]){
     Mat bwi, image = imread("/home/ubuntafoo/Downloads/dog.jpg", CV_LOAD_IMAGE_COLOR);
     cvtColor(image, bwi, COLOR_BGR2GRAY);
     bwi.convertTo(bwi, CV_8UC1);
-    resize(bwi, bwi, Size(), 0.5, 0.5, INTER_LINEAR);
+    //resize(bwi, bwi, Size(), 0.5, 0.5, INTER_LINEAR);
     vector<vector<uchar>> iv = mat2vecs(bwi);
-    //vector<uchar> test;
-    //imencode("jpeg", bwi, test, NULL);
+    vector<uchar> test;
+    vector<int> params = vector<int>(2);
+    params[0] = 1;
+    params[1] = 90;
+    imencode(".jpg", bwi, test, params);
+    cout << test.size() << endl;
 
     // Creating socket file descriptor
     if ((server_fd = socket(AF_INET, SOCK_STREAM, 0)) == 0)
@@ -127,21 +131,23 @@ int main(int argc, char *argv[]){
     printf("%s\n",buffer );
 
     char sz[10];
-    sprintf( sz, "%d,%d", bwi.rows, bwi.cols);
-    cout << sz << endl;
+    //sprintf( sz, "%d,%d", bwi.rows, bwi.cols);
+    //cout << sz << endl;
     //sprintf( w, "%d", bwi.cols);
+    //send(new_socket, sz, strlen(sz), 0);
+    sprintf(sz, "%d", test.size());
     send(new_socket, sz, strlen(sz), 0);
 
-    //send(new_socket, test.data(), test.size(), 0);
-    for(int i = 0; i < bwi.rows; i ++){
-      send(new_socket, iv[i].data(), bwi.cols, 0);
-      usleep(500);
+    send(new_socket, test.data(), test.size(), 0);
+    //for(int i = 0; i < bwi.rows; i ++){
+      //send(new_socket, iv[i].data(), bwi.cols, 0);
+      //usleep(500);
       //valread = read( new_socket, buffer, 1);
       //if(buffer[0] != 'a') {
       //  cout << "Error detected" << endl;
       //  break;
       //}
-    }
+    //}
 
     //send(new_socket, w, strlen(w), 0);
     //send(new_socket , hello , strlen(hello) , 0 );

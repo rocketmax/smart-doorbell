@@ -59,8 +59,8 @@ int main(int argc, char const *argv[])
     serv_addr.sin_port = htons(PORT);
 
     // Convert IPv4 and IPv6 addresses from text to binary form
-    //if(inet_pton(AF_INET, "127.0.0.1", &serv_addr.sin_addr)<=0)
-    if(inet_pton(AF_INET, "10.4.5.21", &serv_addr.sin_addr)<=0)
+    if(inet_pton(AF_INET, "127.0.0.1", &serv_addr.sin_addr)<=0)
+    //if(inet_pton(AF_INET, "10.4.5.21", &serv_addr.sin_addr)<=0)
     {
         printf("\nInvalid address/ Address not supported \n");
         return -1;
@@ -74,36 +74,50 @@ int main(int argc, char const *argv[])
     send(sock , hello , strlen(hello) , 0 );
     printf("Connected to Server\n");
     //valread = read( sock , ptr, 1024);
-    valread = read( sock, sz_buf, 1920);
+    /*valread = read( sock, sz_buf, 1920);
     char * height = strtok (sz_buf,",");
     char * width = strtok (NULL, ",");
     int h = atoi(height);
-    int w = atoi(width);
+    int w = atoi(width);*/
+    valread = read(sock, sz_buf, 10);
+    char * sz = strtok(sz_buf,"\0");
+    int siz = atoi(sz);
     //valread = read(sock, buffer, 1920);
     //int w = atoi(buffer);
-    cout << h << '\t' << w << endl;
+    //cout << h << '\t' << w << endl;
+    cout << siz << endl;
     vector<vector<uchar>> im;
 
-    for(int i = 0; i < h; i++){
+    /*for(int i = 0; i < h; i++){
       valread = read(sock, buffer, w);
       vector<uchar> temp(buffer, buffer+w);
       im.push_back(temp);
       //send(sock, ack, strlen(ack), 0);
-    }
+    }*/
 
     vector<uchar> rx;
 
-    /*while(valread){
+    do{
       valread = read(sock, buffer, 1920);
+      if(valread == -1) {
+        cerr << "error";
+        break;
+      }
+      else if(!valread) {
+        cerr << "disconnect";
+        break;
+      }
       vector<uchar> temp(buffer, buffer+1920);
       rx.insert(rx.end(), temp.begin(), temp.end());
-    }
+    } while(siz > rx.size());
 
-    Mat image = imdecode(rx, 0);*/
+    Mat image = imdecode(Mat(rx), 1);
+    cout << rx.size() << endl;
+    cout << image.rows << '\t' << image.cols << endl;
 
     //a = reinterpret_cast<uchar*>(buffer);
 
-    Mat image = vecs2mat(im);
+    //Mat image = vecs2mat(im);
     //printf("%s\n",buffer );
     //for(int i = 0; i < 81000; i++)
     //  cout << int(a[i]) << '\t';
