@@ -65,9 +65,9 @@ int main(int argc, char const *argv[])
 
     // Convert IPv4 and IPv6 addresses from text to binary form
     //if(inet_pton(AF_INET, "127.0.0.1", &serv_addr.sin_addr)<=0) //localhost
-    //if(inet_pton(AF_INET, "10.4.5.21", &serv_addr.sin_addr)<=0) //union
+    if(inet_pton(AF_INET, "10.4.5.21", &serv_addr.sin_addr)<=0) //union
     //if(inet_pton(AF_INET, "141.215.222.21", &serv_addr.sin_addr)<=0) //school
-    if(inet_pton(AF_INET, "192.168.1.72", &serv_addr.sin_addr)<=0) //home
+    //if(inet_pton(AF_INET, "192.168.1.72", &serv_addr.sin_addr)<=0) //home
     {
         printf("\nInvalid address/ Address not supported \n");
         return -1;
@@ -81,8 +81,6 @@ int main(int argc, char const *argv[])
     send(sock , hello , strlen(hello) , 0 );
     printf("Connected to Server\n");
 
-    //valread = read(sock, sz_buf, 10);
-    char * sz;
     int siz;
     vector<vector<uchar>> im;
 
@@ -92,12 +90,13 @@ int main(int argc, char const *argv[])
     while(1){
       valread = read(sock, sz_buf, 10);
       cout << "Expecting " << sz_buf << endl;
-      sz = strtok(sz_buf, "\0");
-      siz = atoi(sz);
+      siz = atoi(sz_buf);
       //cout << siz << endl;
+
       rx.clear();
       do{
         valread = read(sock, buffer, 1000);
+
         if(valread == -1) {
           cerr << "error";
           break;
@@ -110,11 +109,8 @@ int main(int argc, char const *argv[])
         rx.insert(rx.end(), temp.begin(), temp.end());
       } while(siz > rx.size());
 
-      //while(rx.size() !=siz) rx.pop_back();
-      //printV(rx, 100);
-      //cout << "Expecting " << siz << endl;
       cout << "Received " << rx.size() << endl;
-      image = imdecode(Mat(rx), 1);
+      image = imdecode(rx, 1);
       if(!image.empty()) imshow("image", image);
       if(waitKey(1) == 'q') break;
       send(sock, ack, 2, 0);
