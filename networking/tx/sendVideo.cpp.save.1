@@ -67,24 +67,6 @@ int main(int argc, char *argv[]){
     address.sin_addr.s_addr = INADDR_ANY;
     address.sin_port = htons( PORT );
 
-    Mat bwi, frame;
-    vector<uchar> iv;
-    vector<int> params = vector<int>(2);
-    params[0] = 1;
-    params[1] = 90;
-
-    VideoCapture cap;
-    int deviceID = 0;
-    int apiID = CAP_ANY;
-    cap.open(deviceID + apiID);
-
-    if (!cap.isOpened()) {
-      std::cerr << "ERROR: Unable to open camera\n";
-      return -1;
-    }
-
-    char sz[10], sz_back[10];
-
     // Forcefully attaching socket to the port 8080
     if (bind(server_fd, (struct sockaddr *)&address,
                                  sizeof(address))<0)
@@ -105,15 +87,34 @@ int main(int argc, char *argv[]){
     }
     valread = read( new_socket , buffer, 1024);
     printf("%s\n",buffer );
+
+    Mat bwi, frame;
+    vector<uchar> iv;
+    vector<int> params = vector<int>(2);
+    params[0] = 1;
+    params[1] = 90;
+
+    VideoCapture cap;
+    int deviceID = 0;
+    int apiID = CAP_ANY;
+    cap.open(deviceID + apiID);
+    
+
+    if (!cap.isOpened()) {
+      std::cerr << "ERROR: Unable to open camera\n";
+      return -1;
+    }
+
+    char sz[10], sz_back[10];
     while(status[0] == 'a'){
       cap.read(frame);
       frame.convertTo(bwi, CV_8UC1);
-      //imshow("sent", bwi);
-      //waitKey(1);
+      imshow("sent", bwi);
+      waitKey(1);
       iv.clear();
       imencode(".jpg", bwi, iv, params);
-      //printV(iv, 100);
-      cout << "Sending " << iv.size() << endl;
+      printV(iv, 100);
+      cout << iv.size() << endl;
       sprintf(sz, "%d", iv.size());
       send(new_socket, sz, 10, 0); //sends compressed img size
       //sleep(100);

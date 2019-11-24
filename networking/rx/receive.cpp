@@ -23,6 +23,14 @@ void printV(vector<uchar> v){
   cout << endl;
 }
 
+void printV(vector<uchar> v, int len){
+  if(v.size() < len) len = v.size();
+  for(int i = 0; i < len; ++i){
+    cout << int(v[i]) << '\t';
+  }
+  cout << endl;
+}
+
 Mat vecs2mat(vector<vector<uchar>> v){
 
   Mat image(0, v[0].size(), CV_8UC1);
@@ -40,12 +48,9 @@ int main(int argc, char const *argv[])
     struct sockaddr_in serv_addr;
     char *hello = "Client connected";
     char *ack = "a";
+    char *err = "e";
     char sz_buf[10] = {0};
-    char buffer[1920] = {0};
-    //Mat image;
-    //vector<uchar> iv;
-    //iv.reserve(1024);
-    //vector<uchar> *ptr = &iv;
+    char buffer[1000] = {0};
 
     uchar * a;
 
@@ -59,8 +64,10 @@ int main(int argc, char const *argv[])
     serv_addr.sin_port = htons(PORT);
 
     // Convert IPv4 and IPv6 addresses from text to binary form
-    if(inet_pton(AF_INET, "127.0.0.1", &serv_addr.sin_addr)<=0)
-    //if(inet_pton(AF_INET, "10.4.5.21", &serv_addr.sin_addr)<=0)
+    //if(inet_pton(AF_INET, "127.0.0.1", &serv_addr.sin_addr)<=0) //localhost
+    //if(inet_pton(AF_INET, "10.4.5.21", &serv_addr.sin_addr)<=0) //union
+    //if(inet_pton(AF_INET, "141.215.222.21", &serv_addr.sin_addr)<=0) //school
+    if(inet_pton(AF_INET, "192.168.1.72", &serv_addr.sin_addr)<=0) //home
     {
         printf("\nInvalid address/ Address not supported \n");
         return -1;
@@ -73,57 +80,46 @@ int main(int argc, char const *argv[])
     }
     send(sock , hello , strlen(hello) , 0 );
     printf("Connected to Server\n");
-    //valread = read( sock , ptr, 1024);
-    /*valread = read( sock, sz_buf, 1920);
-    char * height = strtok (sz_buf,",");
-    char * width = strtok (NULL, ",");
-    int h = atoi(height);
-    int w = atoi(width);*/
-    valread = read(sock, sz_buf, 10);
-    char * sz = strtok(sz_buf,"\0");
-    int siz = atoi(sz);
-    //valread = read(sock, buffer, 1920);
-    //int w = atoi(buffer);
-    //cout << h << '\t' << w << endl;
-    cout << siz << endl;
+
+    //valread = read(sock, sz_buf, 10);
+    char * sz;
+    int siz;
     vector<vector<uchar>> im;
 
-    /*for(int i = 0; i < h; i++){
-      valread = read(sock, buffer, w);
-      vector<uchar> temp(buffer, buffer+w);
-      im.push_back(temp);
-      //send(sock, ack, strlen(ack), 0);
-    }*/
-
     vector<uchar> rx;
+    Mat image;
 
-    do{
-      valread = read(sock, buffer, 1920);
-      if(valread == -1) {
-        cerr << "error";
-        break;
-      }
-      else if(!valread) {
-        cerr << "disconnect";
-        break;
-      }
-      vector<uchar> temp(buffer, buffer+1920);
-      rx.insert(rx.end(), temp.begin(), temp.end());
-    } while(siz > rx.size());
+    while(1){
+      valread = read(sock, sz_buf, 10);
+      cout << "Expecting " << sz_buf << endl;
+      sz = strtok(sz_buf, "\0");
+      siz = atoi(sz);
+      //cout << siz << endl;
+      rx.clear();
+      do{
+        valread = read(sock, buffer, 1000);
+        if(valread == -1) {
+          cerr << "error";
+          break;
+        }
+        else if(!valread) {
+          cerr << "disconnect";
+          break;
+        }
+        vector<uchar> temp(buffer, buffer+1000);
+        rx.insert(rx.end(), temp.begin(), temp.end());
+      } while(siz > rx.size());
 
-    Mat image = imdecode(Mat(rx), 1);
-    cout << rx.size() << endl;
-    cout << image.rows << '\t' << image.cols << endl;
+      //while(rx.size() !=siz) rx.pop_back();
+      //printV(rx, 100);
+      //cout << "Expecting " << siz << endl;
+      cout << "Received " << rx.size() << endl;
+      image = imdecode(Mat(rx), 1);
+      if(!image.empty()) imshow("image", image);
+      if(waitKey(1) == 'q') break;
+      send(sock, ack, 2, 0);
+    }
 
-    //a = reinterpret_cast<uchar*>(buffer);
-
-    //Mat image = vecs2mat(im);
-    //printf("%s\n",buffer );
-    //for(int i = 0; i < 81000; i++)
-    //  cout << int(a[i]) << '\t';
-    imshow("image", image);
-    //printV(iv);
-    waitKey(0);
     return 0;
 }
 
