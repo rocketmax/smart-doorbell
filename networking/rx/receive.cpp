@@ -50,7 +50,7 @@ int main(int argc, char const *argv[])
     char *ack = "a";
     char *err = "e";
     char sz_buf[10] = {0};
-    char buffer[1000] = {0};
+    char buffer[40000] = {0};
 
     uchar * a;
 
@@ -67,7 +67,9 @@ int main(int argc, char const *argv[])
     //if(inet_pton(AF_INET, "127.0.0.1", &serv_addr.sin_addr)<=0) //localhost
     //if(inet_pton(AF_INET, "10.4.5.21", &serv_addr.sin_addr)<=0) //union
     //if(inet_pton(AF_INET, "141.215.216.195", &serv_addr.sin_addr)<=0) //school
-    if(inet_pton(AF_INET, "192.168.1.72", &serv_addr.sin_addr)<=0) //home
+    //if(inet_pton(AF_INET, "192.168.1.72", &serv_addr.sin_addr)<=0) //home
+    if(inet_pton(AF_INET, "192.168.43.50", &serv_addr.sin_addr)<=0) //hotspot
+    //if(inet_pton(AF_INET, "32.7.252.160", &serv_addr.sin_addr)<=0) //MGuest
     //if(inet_pton(AF_INET, "10.4.2.92", &serv_addr.sin_addr)<=0) //rpi
     {
         printf("\nInvalid address/ Address not supported \n");
@@ -89,29 +91,18 @@ int main(int argc, char const *argv[])
     Mat image;
 
     while(1){
-      //while(10 > strlen(sz_buf))
       valread = read(sock, sz_buf, 10);
-      cout << "Expecting " << sz_buf << endl;
+      //cout << "Expecting " << sz_buf << endl;
       siz = atoi(sz_buf);
-      //cout << siz << endl;
-
       rx.clear();
-      do{
-        valread = read(sock, buffer, 1000);
 
-        if(valread == -1) {
-          cerr << "error";
-          break;
-        }
-        else if(!valread) {
-          cerr << "disconnect";
-          break;
-        }
-        vector<uchar> temp(buffer, buffer+1000);
+      for(int i = 0; i < siz;i+=valread){
+        valread = recv(sock, buffer, siz - i, 0);
+        vector<uchar> temp(buffer, buffer+valread);
         rx.insert(rx.end(), temp.begin(), temp.end());
-      } while(siz > rx.size());
-
-      cout << "Received " << rx.size() << endl;
+      }
+      //while(siz < rx.size()) rx.pop_back();
+      //cout << "Received " << rx.size() << endl;
       image = imdecode(rx, 1);
       if(!image.empty()) imshow("image", image);
       if(waitKey(1) == 'q') break;
