@@ -1,0 +1,13 @@
+#ignored filetypes
+*.avi
+*.save
+*.swp
+
+#ignore precompiled executable
+get_light
+
+#ignore CMake stuff
+CMakeFiles
+CMakeCache.txt
+Makefile
+cmake_install.cmake

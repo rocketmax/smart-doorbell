@@ -16,7 +16,7 @@ void get_light(){
   cv::Mat temp;
   for(;;){
     cmtx.lock();
-    temp = current;
+    current.copyTo(temp);
     cmtx.unlock();
     if(!temp.empty()){
       sum = cv::sum(temp)[0];

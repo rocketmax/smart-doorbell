@@ -65,9 +65,10 @@ int main(int argc, char const *argv[])
 
     // Convert IPv4 and IPv6 addresses from text to binary form
     //if(inet_pton(AF_INET, "127.0.0.1", &serv_addr.sin_addr)<=0) //localhost
-    if(inet_pton(AF_INET, "10.4.5.21", &serv_addr.sin_addr)<=0) //union
-    //if(inet_pton(AF_INET, "141.215.222.21", &serv_addr.sin_addr)<=0) //school
-    //if(inet_pton(AF_INET, "192.168.1.72", &serv_addr.sin_addr)<=0) //home
+    //if(inet_pton(AF_INET, "10.4.5.21", &serv_addr.sin_addr)<=0) //union
+    //if(inet_pton(AF_INET, "141.215.216.195", &serv_addr.sin_addr)<=0) //school
+    if(inet_pton(AF_INET, "192.168.1.72", &serv_addr.sin_addr)<=0) //home
+    //if(inet_pton(AF_INET, "10.4.2.92", &serv_addr.sin_addr)<=0) //rpi
     {
         printf("\nInvalid address/ Address not supported \n");
         return -1;
@@ -88,6 +89,7 @@ int main(int argc, char const *argv[])
     Mat image;
 
     while(1){
+      //while(10 > strlen(sz_buf))
       valread = read(sock, sz_buf, 10);
       cout << "Expecting " << sz_buf << endl;
       siz = atoi(sz_buf);
