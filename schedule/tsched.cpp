@@ -13,12 +13,14 @@
 #include <netinet/in.h>
 #include <string.h>
 #include <vector>
+#include <wiringPi.h>
 
 #include "include/get_light.hpp"
 #include "include/video_stream.hpp"
 #include "include/led_handler.hpp"
 #include "include/network_handler.hpp"
 #include "include/motion_detect.hpp"
+#include "include/button_sound.hpp"
 
 using namespace std;
 using namespace cv;
@@ -33,11 +35,17 @@ int main(){
 
   margin = 5;
   sensitivity = .9;
+  
+  wiringPiSetup();
+  pinMode(0, OUTPUT); // for LED
+  pinMode(1, INPUT); //for button
+
 
   thread streamT(videoStream);
   thread lightT(get_light);
   thread ledT(led_handler);
   thread motionT(detect);
+  thread butT(buttonsound);
   
   while(1){
     thread netT(network_handler);
@@ -48,6 +56,7 @@ int main(){
   lightT.join();
   ledT.join();
   motionT.join();
+  butT.join();
 
   return 0;
 }
