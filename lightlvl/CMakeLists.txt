@@ -1,7 +1,0 @@
-cmake_minimum_required(VERSION 2.8)
-project( get_light )
-set(CMAKE_CXX_FLAGS "-std=c++0x")
-find_package( OpenCV REQUIRED )
-include_directories( ${OpenCV_INCLUDE_DIRS} )
-add_executable( get_light get_light.cpp )
-target_link_libraries( get_light ${OpenCV_LIBS} )

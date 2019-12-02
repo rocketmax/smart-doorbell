@@ -1,7 +1,0 @@
-cmake_minimum_required(VERSION 2.8)
-project( motion_detect )
-set(CMAKE_CXX_FLAGS "-std=c++0x")
-find_package( OpenCV REQUIRED )
-include_directories( ${OpenCV_INCLUDE_DIRS} )
-add_executable( motion_detect motion_detect.cpp )
-target_link_libraries( motion_detect ${OpenCV_LIBS} )

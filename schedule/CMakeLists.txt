@@ -1,8 +1,0 @@
-cmake_minimum_required(VERSION 2.8)
-project( doorbell )
-set(CMAKE_CXX_FLAGS "-std=c++0x -pthread -lwiringPi")
-find_package( Threads REQUIRED )
-find_package( OpenCV REQUIRED )
-include_directories( ${OpenCV_INCLUDE_DIRS} )
-add_executable( doorbell tsched.cpp src/get_light.cpp src/video_stream.cpp src/led_handler.cpp src/network_handler.cpp src/motion_detect.cpp src/button_sound.cpp)
-target_link_libraries( doorbell ${OpenCV_LIBS} Threads::Threads )
