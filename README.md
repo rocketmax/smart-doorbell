@@ -1,5 +1,7 @@
 Smart Doorbell
 ===
+  ![doorbell](doorbellCAD.png)
+  
 Introduction
 ---
 This project was created for ECE 473 under Professor Shaout and UM-Dearborn. It is a multithreaded C++ application to be run as 
