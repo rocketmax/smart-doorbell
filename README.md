@@ -1,6 +1,6 @@
 Smart Doorbell
 ===
-<div style="align:center"><image /doorbellCAD.png>
+  ![doorbell](doorbellCAD.png)
   
 Introduction
 ---
