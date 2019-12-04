@@ -31,7 +31,9 @@ Wiring
 
 Running
 ---
-Run using `./doorbell`
+Run using `smart-doorbell/doorbell`
+
+To set up running automatically at boot time, see this [autostart](https://learn.sparkfun.com/tutorials/how-to-run-a-raspberry-pi-program-on-startup#method-2-autostart) documentation
 
 To connect to the server from your device, compile the `networking/receiver.cpp` file with the IP address of your Pi entered, then run the file while connected to the same network as the PI. This has only been tested to work on UNIX-like systems. You will also need OpenCV on your host computer to be able to compile the program and view the live images
 
