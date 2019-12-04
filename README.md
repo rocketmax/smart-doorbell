@@ -23,6 +23,25 @@ Building
 3. Prepare CMake `cmake .`
 4. Build the project `make`
 
+Wiring
+---
+* The LED should be wired in series with a resistor between `GND` and `GPIO0`
+* The button should be wired between `VCC` and `GPIO1`
+* The camera will be connected to the `camera` ribbon slot on the board
+
 Running
 ---
 Run using `./doorbell`
+
+To connect to the server from your device, compile the `networking/receiver.cpp` file with the IP address of your Pi entered, then run the file while connected to the same network as the PI. This has only been tested to work on UNIX-like systems. You will also need OpenCV on your host computer to be able to compile the program and view the live images
+
+Viewing Recordings
+---
+To view the recordings that the Pi has taken while operating, access the MicroSD card from the Pi. The recordings are stored in `~/smart-doorbell/recordings`. In this folder, the `.mp4` files from all detection motion events are saved with their date and time. The complete recordings (saved hourly and replaced every 24 hours) can be found in `~/smart-doorbell/recordings/all`. These recordings are tagged with the hour the are from, in the 24 hour format
+
+To Do (Hopefully)
+---
+* Make the network search for necessary device instead of hard coding an IP 
+* Make video feed available for an app instead of UNIX-like computer
+* Create a video backup in case of power loss before `.mp4` files are properly terminated
+* Add wireless speaker that could be placed in the house to make noise when button pressed
