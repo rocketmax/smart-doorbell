@@ -64,13 +64,7 @@ int main(int argc, char const *argv[])
     serv_addr.sin_port = htons(PORT);
 
     // Convert IPv4 and IPv6 addresses from text to binary form
-    //if(inet_pton(AF_INET, "127.0.0.1", &serv_addr.sin_addr)<=0) //localhost
-    //if(inet_pton(AF_INET, "10.4.5.21", &serv_addr.sin_addr)<=0) //union
-    //if(inet_pton(AF_INET, "141.215.216.195", &serv_addr.sin_addr)<=0) //school
-    //if(inet_pton(AF_INET, "192.168.1.72", &serv_addr.sin_addr)<=0) //home
-    if(inet_pton(AF_INET, "192.168.43.50", &serv_addr.sin_addr)<=0) //hotspot
-    //if(inet_pton(AF_INET, "32.7.252.160", &serv_addr.sin_addr)<=0) //MGuest
-    //if(inet_pton(AF_INET, "10.4.2.92", &serv_addr.sin_addr)<=0) //rpi
+    if(inet_pton(AF_INET, "192.168.4.1", &serv_addr.sin_addr)<=0) //hostapd
     {
         printf("\nInvalid address/ Address not supported \n");
         return -1;
