@@ -18,14 +18,15 @@ void videoStream(){
   cap.open(deviceID + apiID);
   cout << "Camera Feed Initialized" << endl;
 
-  cv::VideoWriter writer, mwriter;
-  int codec = cv::VideoWriter::fourcc('m', 'p', '4', 'v');
+  cv::VideoWriter writer, mwriter, tempwriter, mtempwriter;
+  int compressed_codec = VideoWriter::fourcc('m', 'p', '4', 'v');
+  int raw_codec = VideoWriter::fourcc('M', 'J', 'P', 'G');
 
   cv::Mat frame, gray;
   char * strtime;
   tm * datetime;
   int hour, lastmotion = 0; 
-  string name, mname;
+  string name, mname, tempname, mtempname;
 
   for(;;){
     cap.read(frame);
@@ -50,8 +51,10 @@ void videoStream(){
 
     if(hour != datetime->tm_hour || !writer.isOpened()){
       name = "recordings/all/" + to_string(datetime->tm_hour) + "00record.mp4";
-      writer.open(name, codec, 22, frame.size(), true);
+      writer.open(name, compressed_codec, 22, frame.size(), true);
       cout << "New recording started: " << name << endl;
+      tempname = "recordings/all/" + to_string(datetime->tm_hour) + "temp.avi";
+      tempwriter.open(tempname, raw_codec, 22, frame.size(), true);
     }
 
     if(!lastmotion && motion){
@@ -60,8 +63,10 @@ void videoStream(){
         to_string(datetime->tm_hour) + ":" +
         to_string(datetime->tm_min) + ":" +
         to_string(datetime->tm_sec) + ".mp4";
-      mwriter.open(mname, codec, 22, frame.size(), true);
+      mwriter.open(mname, compressed_codec, 22, frame.size(), true);
       cout << "New motion recording started: " << mname << endl;
+      mtempname = "recordings/" + to_string(datetime->tm_hour) + "temp.avi";
+      mtempwriter.open(mtempname, raw_codec, 22, frame.size(), true);
     }
 
     lastmotion = motion;
@@ -70,8 +75,11 @@ void videoStream(){
     //waitKey(5); 
     hour = datetime->tm_hour;
     writer.write(frame);
-    if(motion) mwriter.write(frame);
-
+    tempwriter.write(frame);
+    if(motion) {
+      mwriter.write(frame);
+      mtempwriter.write(frame);
+    }
     //cout << "frame grabbed" << endl;
     t.unlock();
     n.unlock();
