@@ -16,16 +16,16 @@ void get_light(){
   cv::Mat temp;
   for(;;){
     cmtx.lock();
-    current.copyTo(temp);
+    current.copyTo(temp); //grabs most recent frame
     cmtx.unlock();
     if(!temp.empty()){
-      sum = cv::sum(temp)[0];
-      avg = sum / (temp.rows*temp.cols);
+      sum = cv::sum(temp)[0]; //gets sum of all greyscale pixels in the single channel
+      avg = sum / (temp.rows*temp.cols); //avgs
       lmtx.lock();
-      light = avg;
+      light = avg; //stores avg light level
       lmtx.unlock();
       //cout << "Light: " << avg << endl;
     }
-    t.lock();
+    t.lock(); //wait for new frame
   }
 }
