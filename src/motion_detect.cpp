@@ -20,23 +20,23 @@ void detect() {
 
   for(;;){
     cmtx.lock();
-    current.copyTo(c);
+    current.copyTo(c); //get current frame
     cmtx.unlock();
     pmtx.lock();
-    past.copyTo(p);
+    past.copyTo(p); //get last frame
     pmtx.unlock();
-    if(c.empty() || p.empty()) continue;
+    if(c.empty() || p.empty()) continue; //validity check
 
     count = 0;
     pixels = c.size().height * c.size().width;
-    lowerB = p - 5;
+    lowerB = p - 5; //generate lower/upper bounds of what pixels are considered unchanged
     upperB = p + 5;
-    cv::inRange(current, lowerB, upperB, dst);
-    change = (float) cv::countNonZero(dst) / pixels;
-    //cv::imshow("test", dst);
+    cv::inRange(current, lowerB, upperB, dst); //generate a binary image to display which pixels changed beyond acceptable margin
+    change = (float) cv::countNonZero(dst) / pixels; //get percentage of pixels changed
+    //cv::imshow("test", dst); //display change
     //std::cout << count << '/' << pixels << '=' << change << std::endl;
     //cout << counter << '\t';
-    if (change < sensitivity){ //higher for
+    if (change < sensitivity){ //higher for 
       if(!motion) cout << "Motion began" << endl;
       mmtx.lock();
       motion = 1;
