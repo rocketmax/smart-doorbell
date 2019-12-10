@@ -19,8 +19,8 @@ void videoStream(){
   cout << "Camera Feed Initialized" << endl;
 
   cv::VideoWriter writer, mwriter, tempwriter, mtempwriter;
-  int compressed_codec = VideoWriter::fourcc('m', 'p', '4', 'v');
-  int raw_codec = VideoWriter::fourcc('M', 'J', 'P', 'G');
+  int compressed_codec = VideoWriter::fourcc('m', 'p', '4', 'v'); //saves .mp4 REQUIRES CLOSURE
+  int raw_codec = VideoWriter::fourcc('M', 'J', 'P', 'G'); //saves .avi DOES NOT REQUIRE CLOSURE
 
   cv::Mat frame, gray;
   char * strtime;
@@ -37,23 +37,23 @@ void videoStream(){
     cv::cvtColor(frame, gray, COLOR_BGR2GRAY);
     gray.convertTo(gray, CV_8UC1);
     pmtx.lock();
-    current.copyTo(past);
+    current.copyTo(past); //move current frame to old
     pmtx.unlock();
     cmtx.lock();
-    gray.copyTo(current);
+    gray.copyTo(current); //save grayscale iamge
     cmtx.unlock();
 
     now = time(0);
     strtime = ctime(&now);
     datetime = localtime(&now);
 
-    cv::putText(frame, strtime, {frame.rows - 180, 50}, FONT_HERSHEY_SIMPLEX, 1, {255,255,255});
+    cv::putText(frame, strtime, {frame.rows - 180, 50}, FONT_HERSHEY_SIMPLEX, 1, {255,255,255}); //print timestamp on image
 
     if(hour != datetime->tm_hour || !writer.isOpened()){
-      name = "recordings/all/" + to_string(datetime->tm_hour) + "00record.mp4";
+      name = "recordings/all/" + to_string(datetime->tm_hour) + "00record.mp4"; //save hourly log
       writer.open(name, compressed_codec, 22, frame.size(), true);
       cout << "New recording started: " << name << endl;
-      tempname = "recordings/all/" + to_string(datetime->tm_hour) + "temp.avi";
+      tempname = "recordings/all/" + to_string(datetime->tm_hour) + "temp.avi"; //save temp log
       tempwriter.open(tempname, raw_codec, 22, frame.size(), true);
     }
 
@@ -63,9 +63,9 @@ void videoStream(){
         to_string(datetime->tm_hour) + ":" +
         to_string(datetime->tm_min) + ":" +
         to_string(datetime->tm_sec) + ".mp4";
-      mwriter.open(mname, compressed_codec, 22, frame.size(), true);
+      mwriter.open(mname, compressed_codec, 22, frame.size(), true); //save motion log
       cout << "New motion recording started: " << mname << endl;
-      mtempname = "recordings/" + to_string(datetime->tm_hour) + "temp.avi";
+      mtempname = "recordings/" + to_string(datetime->tm_hour) + "temp.avi"; //save temp motion log
       mtempwriter.open(mtempname, raw_codec, 22, frame.size(), true);
     }
 
@@ -73,15 +73,15 @@ void videoStream(){
 
     //imshow("frame", frame);
     //waitKey(5); 
-    hour = datetime->tm_hour;
-    writer.write(frame);
+    hour = datetime->tm_hour; //update time
+    writer.write(frame); //save frames to video
     tempwriter.write(frame);
     if(motion) {
       mwriter.write(frame);
       mtempwriter.write(frame);
     }
     //cout << "frame grabbed" << endl;
-    t.unlock();
+    t.unlock(); //unlock waiting threads
     n.unlock();
     d.unlock();
   }
