@@ -7,8 +7,8 @@
 
 void buttonPress(){
     
-  if (digitalRead(1) == 1){
-    system("omxplayer ./ring.wav -o local" );
+  if (digitalRead(1) == 1){ //checks button press
+    system("omxplayer ./ring.wav -o local" ); //makes system call to play door chime
     //display sound
   }
 
@@ -17,5 +17,5 @@ void buttonPress(){
 void buttonsound()
 {
     
-  for(;;) buttonPress();
+  for(;;) buttonPress(); //gadfly loop
 }
