@@ -25,34 +25,34 @@
 using namespace std;
 using namespace cv;
 
-Mat current, past;
-int light, led, motion, margin;
-float sensitivity;
-mutex cmtx, pmtx, mmtx, lmtx, t, n, d;
+Mat current, past; //global images
+int light, led, motion, margin; //global integers
+float sensitivity; //global sensitivity for motion detecton
+mutex cmtx, pmtx, mmtx, lmtx, t, n, d; //mutexes (semaphores)
 time_t now;
 
 int main(){
 
-  margin = 5;
+  margin = 5; //initializes motion detection parameters
   sensitivity = .9;
   
-  wiringPiSetup();
+  wiringPiSetup(); //initializes GPIO
   pinMode(0, OUTPUT); // for LED
   pinMode(1, INPUT); //for button
 
 
-  thread streamT(videoStream);
-  thread lightT(get_light);
-  thread ledT(led_handler);
-  thread motionT(detect);
-  thread butT(buttonsound);
+  thread streamT(videoStream); //starts the camera thread
+  thread lightT(get_light); //begins calculating the light in each image
+  thread ledT(led_handler); //controls led state
+  thread motionT(detect); //calculates if motion occurred
+  thread butT(buttonsound); //polls button
   
   while(1){
-    thread netT(network_handler);
+    thread netT(network_handler); //continuously restarts server on client disconnect/thread completion
     netT.join();
   }
 
-  streamT.join();
+  streamT.join(); //waits for each thread to terminate before killing program (never)
   lightT.join();
   ledT.join();
   motionT.join();
