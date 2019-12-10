@@ -71,21 +71,21 @@ void network_handler(){
         perror("accept");
         exit(EXIT_FAILURE);
     }
-    valread = read( new_socket , buffer, 1024);
+    valread = read( new_socket , buffer, 1024); //wait for client connect
     printf("%s\n",buffer );
     while(status[0] == 'a'){
       cmtx.lock();
-      frame = current;
+      frame = current; //grab current frame
       cmtx.unlock();
 
       if(frame.empty()) continue;
 
       iv.clear();
-      imencode(".jpg", frame, iv, params);
+      imencode(".jpg", frame, iv, params); //compress image
       //printV(iv, 100);
 
       //cout << "Sending " << iv.size() << endl;
-      sprintf(sz, "%d", iv.size());
+      sprintf(sz, "%d", iv.size()); 
       send(new_socket, sz, 10, 0); //sends compressed img size
       //status[0] = 'e';
       //valread = read(new_socket, status, 2);
